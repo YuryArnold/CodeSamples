@@ -5,8 +5,7 @@
  */
 concrete_client_sender::concrete_client_sender()
 {
-    size_of_message = 4096;
-    force_quit = false;
+
 }
 
 /**
@@ -15,14 +14,11 @@ concrete_client_sender::concrete_client_sender()
  * @param _buffer
  * @param _id
  */
-concrete_client_sender::concrete_client_sender(std::mutex *_shared_mutex,
-                                               ShmCircularBuffer *_buffer,
-                                               int _id) : shared_mutex(_shared_mutex),buffer(_buffer),id(_id)
+concrete_client_sender::concrete_client_sender(const std::shared_ptr<ShmCircularBuffer>& _buffer,
+                                               int _id) :buffer(_buffer),id(_id)
 {
-    size_of_message = 4096;
-    force_quit = false;
-}
 
+}
 
 /**
  * @brief concrete_client_sender::~concrete_client_sender
@@ -33,15 +29,6 @@ concrete_client_sender::~concrete_client_sender()
         thread_for_sending.join();
     if(file.isOpen())
         file.close();
-}
-
-/**
- * @brief concrete_client_sender::set_shared_mutex
- * @param _mtx
- */
-void concrete_client_sender::set_shared_mutex(std::mutex *_mtx)
-{
-    shared_mutex = _mtx;
 }
 
 /**
@@ -71,7 +58,7 @@ int concrete_client_sender::set_path_to_file(const char* _path_to_file)
  * @brief concrete_client_sender::set_ptr_to_shared_buffer
  * @param _buffer
  */
-void concrete_client_sender::set_ptr_to_shared_buffer(ShmCircularBuffer* _buffer)
+void concrete_client_sender::set_ptr_to_shared_buffer(const std::shared_ptr<ShmCircularBuffer>& _buffer)
 {
     buffer = _buffer;
 }
@@ -89,11 +76,9 @@ void concrete_client_sender::write_data()
        tmp.data_size = raw_data.size();
        file_size -= tmp.data_size;
        {
-            std::lock_guard<std::mutex> lock(*shared_mutex);
             if(file_size <= 0)
                 tmp.is_over = true;
             buffer->set_message(tmp);
-            /*If last burst of data smaller or equal zero, so we transfered data.*/
        }
        tmp.msg_number++;
     }
@@ -109,10 +94,11 @@ void concrete_client_sender::set_force_quit(bool _quit)
 
 void concrete_client_sender::start()
 {
-    int m_sleep_period = 600;
+    int sleep_period = 600;
     force_quit = false;
     thread_for_sending = std::thread(&concrete_client_sender::write_data,this);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_sleep_period));
+    /*Waiting for thread started*/
+    std::this_thread::sleep_for(std::chrono::milliseconds(sleep_period));
 }
 
 const char *concrete_client_sender::get_file_name()
@@ -129,6 +115,7 @@ int concrete_client_sender::open_file()
          file.close();
     }
 
+    force_quit = false;
     file.setFileName(path_to_file);
     if(!file.open(QIODevice::ReadWrite)){
         file.close();

@@ -14,11 +14,7 @@ void Client_transport::create_concrete_clients()
 {
    int numb_of_clients = config_conationer.files_count();
    for(int client_cnt = 0; client_cnt< numb_of_clients; ++client_cnt){
-       auto tmp = std::make_shared<concrete_client_sender>(&shared_mtx,
-                                                           buffer.get(),
-                                                           config_conationer.client_id());
-
-
+       auto tmp = std::make_shared<concrete_client_sender>(buffer,config_conationer.client_id());
        tmp->set_path_to_file(config_conationer.file(client_cnt));
        clients.push_back(tmp);
    }
@@ -31,7 +27,6 @@ void Client_transport::send_data_from_config(const char *path_to_file)
         create_concrete_clients();
     else
         throw "Error in opening input file";
-
 }
 
 

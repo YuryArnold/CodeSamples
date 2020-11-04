@@ -2,12 +2,12 @@
 
 concrete_client_receiver::concrete_client_receiver()
 {
-    m_sleep_period = 200;
-    force_quit = false;
+
 }
 
 concrete_client_receiver::~concrete_client_receiver()
 {
+    force_quit = true;
     if(thread_for_receiver.joinable())
         thread_for_receiver.join();
 
@@ -27,19 +27,19 @@ int concrete_client_receiver::set_path_to_file(const char* _path_to_file)
 
 void concrete_client_receiver::set_message_to_container(message &_incoming_message)
 {
-    std::lock_guard<std::mutex> lock(mtx_for_container);
-    messages.push(_incoming_message);
+    std::lock_guard<std::mutex> lock(m_mtx_for_container);
+    m_messages.push(_incoming_message);
 }
 
 void concrete_client_receiver::read_data()
 {
     message rec_mes;
     forever{
-        if(!messages.empty()){
+        if(!m_messages.empty()){
             {
-                std::lock_guard<std::mutex> lock(mtx_for_container);
-                rec_mes = messages.front();
-                messages.pop();
+                std::lock_guard<std::mutex> lock(m_mtx_for_container);
+                rec_mes = m_messages.front();
+                m_messages.pop();
                 std::cout<<rec_mes.msg_number<<" Block size "<<rec_mes.data_size<<std::endl;
             }
              file.write(QByteArray(reinterpret_cast<const char*>(rec_mes.data),rec_mes.data_size));
@@ -63,12 +63,12 @@ void concrete_client_receiver::set_force_quit(bool _quit)
 void concrete_client_receiver::start()
 {
      thread_for_receiver = std::thread(&concrete_client_receiver::read_data,this);
+    /*Waiting for thread started*/
      std::this_thread::sleep_for(std::chrono::milliseconds(m_sleep_period));
 }
 
 int concrete_client_receiver::open_file()
 {
-
     if(file.isOpen()){
         force_quit = true;
         if(thread_for_receiver.joinable())
@@ -76,6 +76,7 @@ int concrete_client_receiver::open_file()
         file.close();
     }
 
+    force_quit = false;
     file.setFileName(path_to_file);
     if(!file.open(QIODevice::ReadWrite)){
         file.close();

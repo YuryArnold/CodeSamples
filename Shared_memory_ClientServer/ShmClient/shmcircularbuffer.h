@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <iostream>
 #include <exception>
+#include <mutex>
 #include <memory>
 #include "messagestructures.h"
 
@@ -35,7 +36,7 @@ private:
     TypeOfBuffer bufType;
     uint32_t id;
     uint32_t msg_cnt;
-
+    std::mutex m_acessDataMtx;
 };
 
 #endif // SHMCIRCULARBUFFER_H

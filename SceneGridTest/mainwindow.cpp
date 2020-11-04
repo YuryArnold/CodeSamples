@@ -113,9 +113,9 @@ void MainWindow::generateMaze()
 {
 
     ui->sceneOfSquares->clear();
-    for(int ind = 0; ind < numbOfElem; ++ind)
-        for(int ind2 = 0; ind2 < numbOfElem; ++ind2)
-            states[ind][ind2] = isBlack();
+    for(int row = 0; row < numbOfElem; ++row)
+        for(int col = 0; col < numbOfElem; ++col)
+            states[row][col] = isBlack();
 
     duringPoints.clear();
     items.clear();
@@ -134,16 +134,16 @@ void MainWindow::createMaze(QVector<QVector<bool> > &_states)
     float itemWidth = sceneWidth / numbOfElem;
     float itemHeigh = sceneHeight / numbOfElem;
 
-    for(int ind = -numbOfElem/2; ind < numbOfElem/2; ++ind){
+    for(int row = -numbOfElem/2; row < numbOfElem/2; ++row){
         QVector<SquareItem*> tmp;
-        for(int ind2 =  -numbOfElem/2; ind2 < numbOfElem/2; ++ind2){
+        for(int col =  -numbOfElem/2; col < numbOfElem/2; ++col){
             auto ptr = new SquareItem();
-            ptr->setRect(QRectF((ind2 * itemWidth) + 2,
-                                (ind * itemHeigh) + 2,
+            ptr->setRect(QRectF((col * itemWidth) + 2,
+                                (row * itemHeigh) + 2,
                                 itemWidth,
                                 itemHeigh));
-            ptr->setGridCoord(ind + numbOfElem/2, ind2 + numbOfElem/2);
-            if(!_states[ind + numbOfElem/2][ind2 + numbOfElem/2])
+            ptr->setGridCoord(row + numbOfElem/2, col + numbOfElem/2);
+            if(!_states[row + numbOfElem/2][col + numbOfElem/2])
                 ptr->setState(State::Colored);
             tmp.append(ptr);
         }

@@ -45,8 +45,12 @@ void Server_transport::start_server()
 
 void Server_transport::stop_server()
 {
+    start_server_flag = false;
     if(thread_for_clients.joinable())
             thread_for_clients.join();
+
+    for(auto& client : clients)
+        client.second->set_force_quit(true);
 }
 
 

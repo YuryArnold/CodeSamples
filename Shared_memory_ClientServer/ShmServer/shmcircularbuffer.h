@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <iostream>
 #include <exception>
+#include <mutex>
 #include <memory>
 #include "messagestructures.h"
 
@@ -32,10 +33,10 @@ private:
     shared_memory *shared_mem_ptr;
     sem_t *mutex_sem, *buffer_count_sem, *spool_signal_sem;
     int fd_shm;
-    std::atomic<bool> force_quit;
     TypeOfBuffer bufType;
     uint32_t id;
     uint32_t msg_cnt;
+    std::mutex m_acessDataMtx;
 };
 
 #endif // SHMCIRCULARBUFFER_H

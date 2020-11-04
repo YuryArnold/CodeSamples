@@ -33,12 +33,12 @@ private:
 
 private:
     std::thread thread_for_receiver;
-    std::mutex mtx_for_container;
+    std::mutex m_mtx_for_container;
     const char* path_to_file;
-    std::queue<message> messages;
+    std::queue<message> m_messages;
     QFile file;
-    std::atomic<bool> force_quit;
-    int m_sleep_period;
+    std::atomic<bool> force_quit{false};
+    int m_sleep_period = 200;
 };
 
 #endif // CONCRETE_CLIENT_H

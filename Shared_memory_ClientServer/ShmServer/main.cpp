@@ -3,6 +3,11 @@
 int main()
 {
     Server_transport server;
-    server.open();
+    try {
+       server.open();
+    } catch (std::string& str) {
+        std::cout<<str<<std::endl;
+    }
+
     return 0;
 }

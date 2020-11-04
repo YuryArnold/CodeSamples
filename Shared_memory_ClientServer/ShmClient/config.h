@@ -18,8 +18,8 @@ public:
     const char *file(uint32_t index);
 
 private:
-    uint32_t id;
-    uint32_t threads;
+    uint32_t id = 0;
+    uint32_t threads = 0;
     std::vector<std::string> files;
 
 };

@@ -4,8 +4,7 @@
 
 config::config()
 {
-    id = 0;
-    threads = 0;
+
 }
 
 config::~config()
