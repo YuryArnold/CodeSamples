@@ -83,8 +83,6 @@ void concrete_client_sender::write_data()
     tmp.is_over = false;
     tmp.msg_number = 0;
     tmp.client_run_time = std::chrono::system_clock::now().time_since_epoch().count();
-    bool is_op = file.isOpen();
-    bool at_end = file.atEnd();
     while(file.isOpen() && !file.atEnd() && !force_quit){
        QByteArray raw_data = file.read(size_of_message);
        std::copy(raw_data.begin(),raw_data.end(),tmp.data);

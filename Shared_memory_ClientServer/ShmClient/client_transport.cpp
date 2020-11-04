@@ -7,7 +7,7 @@ Client_transport::Client_transport()
 
 Client_transport::~Client_transport()
 {
-    //close();
+    close();
 }
 
 void Client_transport::create_concrete_clients()

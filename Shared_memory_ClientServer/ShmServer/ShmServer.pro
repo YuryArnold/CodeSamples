@@ -36,8 +36,6 @@ HEADERS += \
         server_transport.h \
         shmcircularbuffer.h
 
-FORMS += \
-        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

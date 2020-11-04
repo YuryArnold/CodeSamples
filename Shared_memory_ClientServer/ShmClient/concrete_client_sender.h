@@ -11,8 +11,7 @@
 /**
  * @brief The concrete_client class
  * This class represents logick for
- * sending and receiveing data with
- * inherited qthread future in it.
+ * sending and receiveing data.
  * It sending or receiveing data
  * asyncrounuosly.
  */

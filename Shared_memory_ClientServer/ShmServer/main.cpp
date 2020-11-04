@@ -1,4 +1,3 @@
-#include "mainwindow.h"
 #include "server_transport.h"
 
 int main()
